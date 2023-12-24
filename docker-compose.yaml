@@ -20,7 +20,7 @@ services:
       - app-network
 
   app:
-    image: 29trxngxx/devops-training/devop-training:{tag}
+    image: 29trxngxx/devops-training:{tag}
     build:
       context: .
       dockerfile: Dockerfile
