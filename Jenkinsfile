@@ -2,14 +2,14 @@ pipeline {
    agent none
    environment {
         ENV = "dev"
-        NODE = "Build-Server"
+        NODE = "Build-server"
     }
 
    stages {
     stage('Build Image') {
         agent {
             node {
-                label "Build-Server"
+                label "Build-server"
                 customWorkspace "/home/seta/"
                 }
             }
