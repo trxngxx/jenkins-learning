@@ -10,7 +10,7 @@ pipeline {
         agent {
             node {
                 label "Build-Server"
-                customWorkspace "/home/ngo/jenkins"
+                customWorkspace "/home/seta/"
                 }
             }
         environment {
