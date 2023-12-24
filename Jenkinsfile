@@ -20,15 +20,15 @@ pipeline {
             sh "docker build nodejs/. -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f nodejs/Dockerfile"
 
 
-            sh "cat docker.txt | docker login -u manhhoangseta --password-stdin"
+            sh "cat docker.txt | docker login -u 29trxngxx --password-stdin"
             // tag docker image
-            sh "docker tag devops-training-nodejs-$ENV:latest [dockerhub-repo]:$TAG"
+            sh "docker tag devops-training-nodejs-$ENV:latest 29trxngxx/devops-training"
 
             //push docker image to docker hub
-            sh "docker push [dockerhub-repo]:$TAG"
+            sh "docker push 29trxngxx/devops-training"
 
 	    // remove docker image to reduce space on build server	
-            sh "docker rmi -f [dockerhub-repo]:$TAG"
+            sh "docker rmi -f 29trxngxx/devops-training"
 
            }
          
