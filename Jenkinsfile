@@ -10,14 +10,14 @@ pipeline {
         agent {
             node {
                 label "Build-Server"
-                customWorkspace "/home/seta-$ENV/"
+                customWorkspace "/home/ngo/jenkins"
                 }
             }
         environment {
             TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
          steps {
-            sh "docker build nodejs/. -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f nodejs/Dockerfile"
+            sh "docker build . -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f Dockerfile"
 
 
             sh "cat docker.txt | docker login -u 29trxngxx --password-stdin"
@@ -37,7 +37,7 @@ pipeline {
 	    agent {
         node {
             label "Target-Server"
-                customWorkspace "/home/ubuntu/jenkins/multi-branch/devops-training-$ENV/"
+                customWorkspace "/home/ubuntu/jenkins/devops-training-$ENV/"
             }
         }
         environment {
@@ -45,7 +45,7 @@ pipeline {
         }
 	steps {
             sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins/multi-branch/devops-training-$ENV/docker-compose.yaml"
-            sh "docker compose up -d"
+            sh "docker-compose up -d"
         }      
        }
    }
