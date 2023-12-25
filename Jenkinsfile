@@ -1,7 +1,7 @@
 pipeline {
    agent none
    environment {
-        ENV = "prod"
+        ENV = "stage"
         NODE = "Build-server"
     }
 
