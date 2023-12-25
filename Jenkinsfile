@@ -1,7 +1,13 @@
+parameters {
+    choice(
+        choices: ['dev', 'uat', 'prod'],
+        description: 'Select the environment to deploy.'
+    )
+}
 pipeline {
    agent none
    environment {
-        ENV = "dev"
+        ENV = params.ENV ?: "dev"
         NODE = "Build-server"
     }
 
@@ -37,7 +43,7 @@ pipeline {
 	    agent {
         node {
             label "Target-Server"
-                customWorkspace "/home/ubuntu/jenkins-$ENV/"
+                customWorkspace "/home/ubuntu/jenkins-${params.ENV}/"
             }
         }
         environment {
