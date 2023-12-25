@@ -7,7 +7,7 @@ parameters {
 pipeline {
    agent none
    environment {
-        ENV = params.ENV ?: "dev"
+        ENV = params.ENV ?: 'dev'
         NODE = "Build-server"
     }
 
