@@ -17,7 +17,6 @@ pipeline {
             TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
          steps {
-            echo "ENV: $ENV"
             sh "docker build . -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f Dockerfile"
 
 
@@ -45,7 +44,7 @@ pipeline {
             TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
 	steps {
-            sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins-${params.ENV}/docker-compose.yaml"
+            sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins-$ENV/docker-compose.yaml"
             sh "docker-compose up -d"
         }      
        }
