@@ -34,6 +34,7 @@ services:
       DB_USER: training
       DB_PASSWORD: training_pw
       DB_DATABASE: users
+      BUILD_ENV: stage
     networks:
       - app-network
 
