@@ -1,7 +1,8 @@
 parameters {
     choice(
         choices: ['dev', 'uat', 'prod'],
-        description: 'Select the environment to deploy.'
+        description: 'Select the environment to deploy.',
+        name:'ENV'
     )
 }
 pipeline {
@@ -23,12 +24,13 @@ pipeline {
             TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
          steps {
-            sh "docker build . -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f Dockerfile"
+            echo "ENV: ${params.ENV}"
+            sh "docker build . -t devops-training-nodejs-${params.ENV}:latest --build-arg BUILD_ENV=${params.ENV} -f Dockerfile"
 
 
             sh "cat docker.txt | docker login -u 29trxngxx --password-stdin"
             // tag docker image
-            sh "docker tag devops-training-nodejs-$ENV:latest 29trxngxx/devops-training:$TAG"
+            sh "docker tag devops-training-nodejs-${params.ENV}:latest 29trxngxx/devops-training:$TAG"
 
             //push docker image to docker hub
             sh "docker push 29trxngxx/devops-training:$TAG"
@@ -50,7 +52,7 @@ pipeline {
             TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
 	steps {
-            sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins-$ENV/docker-compose.yaml"
+            sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins-${params.ENV}/docker-compose.yaml"
             sh "docker-compose up -d"
         }      
        }
