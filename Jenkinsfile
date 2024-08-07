@@ -10,7 +10,7 @@ pipeline {
         agent {
             node {
                 label "Build-server"
-                customWorkspace "/home/ubuntu/jenkins"
+                customWorkspace "/home/ubuntu/jenkins/"
                 }
             }
         environment {
@@ -37,7 +37,7 @@ pipeline {
 	    agent {
         node {
             label "Target-Server"
-                customWorkspace "/home/ubuntu/jenkins-$ENV/"
+                customWorkspace "/home/ubuntu/jenkins/"
             }
         }
         environment {
