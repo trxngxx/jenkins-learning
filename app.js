@@ -7,7 +7,6 @@ const swaggerJSDoc = require('swagger-jsdoc');
 
 const app = express();
 const port = 3000;
-const port = 3001;
 
 // Create a MySQL connection pool
 const pool = mysql.createPool({
