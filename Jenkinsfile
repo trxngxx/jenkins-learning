@@ -1,61 +1,53 @@
 pipeline {
-    agent none
-    environment {
+   agent none
+   environment {
         ENV = "dev"
         NODE = "Build-server"
     }
 
-    stages {
-        stage('Build Image') {
-            agent {
-                node {
-                    label "Build-server"
-                    customWorkspace "/home/ubuntu/jenkins/"
+   stages {
+    stage('Build Image') {
+        agent {
+            node {
+                label "Build-server"
+                customWorkspace "/home/ubuntu/jenkins/"
                 }
             }
-            environment {
-                TAG = ''
-            }
-            steps {
-                script {
-                    TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
-                    if (TAG == null || TAG.trim() == "") {
-                        error("TAG cannot be empty. Please check the git command.")
-                    }
-                }
-                sh """
-                    docker build . -t devops-training-nodejs-${ENV}:latest --build-arg BUILD_ENV=${ENV} -f Dockerfile
-                    cat docker.txt | docker login -u 29trxngxx --password-stdin
-                    docker tag devops-training-nodejs-${ENV}:latest 29trxngxx/devops-training:${TAG}
-                    docker push 29trxngxx/devops-training:${TAG}
-                    docker rmi -f 29trxngxx/devops-training:${TAG}
-                """
+        environment {
+            TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
+        }
+         steps {
+            sh "docker build . -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f Dockerfile"
+
+
+            sh "cat docker.txt | docker login -u 29trxngxx --password-stdin"
+            // tag docker image
+            sh "docker tag devops-training-nodejs-$ENV:latest 29trxngxx/devops-training:$TAG"
+
+            //push docker image to docker hub
+            sh "docker push 29trxngxx/devops-training:$TAG"
+
+	    // remove docker image to reduce space on build server	
+            sh "docker rmi -f 29trxngxx/devops-training:$TAG"
+
+           }
+         
+       }
+	  stage ("Deploy ") {
+	    agent {
+        node {
+            label "Target-Server"
+                customWorkspace "/home/ubuntu/jenkins"
             }
         }
-        
-        stage('Deploy') {
-            agent {
-                node {
-                    label "Target-Server"
-                    customWorkspace "/home/ubuntu/jenkins"
-                }
-            }
-            environment {
-                TAG = ''
-            }
-            steps {
-                script {
-                    TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
-                    if (TAG == null || TAG.trim() == "") {
-                        error("TAG cannot be empty. Please check the git command.")
-                    }
-                }
-                sh """
-                    docker network inspect app-network || docker network create app-network
-                    sed -i 's/{tag}/${TAG}/g' /home/ubuntu/jenkins/docker-compose.yaml
-                    docker-compose up -d
-                """
-            }
+        environment {
+            TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
-    }
+	steps {
+            sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins/docker-compose.yaml"
+            sh "docker-compose up -d"
+        }      
+       }
+   }
+    
 }
