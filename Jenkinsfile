@@ -19,6 +19,9 @@ pipeline {
             steps {
                 script {
                     TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
+                    if (TAG == null || TAG.trim() == "") {
+                        error("TAG cannot be empty. Please check the git command.")
+                    }
                 }
                 sh """
                     docker build . -t devops-training-nodejs-${ENV}:latest --build-arg BUILD_ENV=${ENV} -f Dockerfile
@@ -43,6 +46,9 @@ pipeline {
             steps {
                 script {
                     TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
+                    if (TAG == null || TAG.trim() == "") {
+                        error("TAG cannot be empty. Please check the git command.")
+                    }
                 }
                 sh """
                     docker network inspect app-network || docker network create app-network
