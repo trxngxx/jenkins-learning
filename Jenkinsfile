@@ -14,9 +14,12 @@ pipeline {
                 }
             }
             environment {
-                TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
+                TAG = ''
             }
             steps {
+                script {
+                    TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
+                }
                 sh """
                     docker build . -t devops-training-nodejs-${ENV}:latest --build-arg BUILD_ENV=${ENV} -f Dockerfile
                     cat docker.txt | docker login -u 29trxngxx --password-stdin
@@ -35,9 +38,12 @@ pipeline {
                 }
             }
             environment {
-                TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
+                TAG = ''
             }
             steps {
+                script {
+                    TAG = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD | tail -n +2").trim()
+                }
                 sh """
                     docker network inspect app-network || docker network create app-network
                     sed -i 's/{tag}/${TAG}/g' /home/ubuntu/jenkins/docker-compose.yaml
