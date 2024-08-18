@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-
 jobs:
   build:
     name: Build and analyze
@@ -38,8 +37,8 @@ jobs:
         run: docker push 29trxngxx/jenkins-learning:latest        
 
       - name: Trigger Jenkins Job
-      if: success()
-      run: |
-        curl -X POST \
-          -u ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }} \
-          "${{ secrets.JENKINS_URL }}/job/Jenkins-Learning/build?token=${{ secrets.JENKINS_JOB_TOKEN }}"   
+        if: success()
+        run: |
+          curl -X POST \
+            -u ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }} \
+            "${{ secrets.JENKINS_URL }}/job/Jenkins-Learning/build?token=${{ secrets.JENKINS_JOB_TOKEN }}"
